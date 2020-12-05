@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Row from 'react-bootstrap/Row';
 
 export enum TimerState {
@@ -19,11 +19,12 @@ interface TimerProps {
 }
 
 const Timer = (props: TimerProps) => {
-  const [intervalId, setIntervalId] = useState<number>();
+  const { timerState, timerType } = props;
+  const intervalId = useRef<number>();
   const [seconds, setSeconds] = useState(0);
 
   function reset () {
-    switch (props.timerType) {
+    switch (timerType) {
       case TimerType.Focus:
         setSeconds(1500);
         break;
@@ -36,41 +37,42 @@ const Timer = (props: TimerProps) => {
     }
   }
 
-  useEffect(() => reset(), [props.timerType]);
+  const resetOnTimerTypeChange = useCallback(reset, [timerType]);
+  useEffect(resetOnTimerTypeChange, [resetOnTimerTypeChange]);
 
   useEffect(() => {
-    switch (props.timerState) {
+    switch (timerState) {
       case TimerState.Started:
-        setIntervalId(window.setInterval(() => {
+        intervalId.current = window.setInterval(() => {
           setSeconds(s => s <= 0 ? 0 : --s)
-        }, 1000));
+        }, 1000)
         break;
       case TimerState.Paused:
-        clearInterval(intervalId);
+        clearInterval(intervalId.current);
         break;
       case TimerState.Reset:
-        clearInterval(intervalId);
+        clearInterval(intervalId.current);
+        // To Do - Refactor me because I am violating react-hooks/exhaustive-deps. After refactoring, remove the 'eslint-disable-next-line' below
         reset();
         break;
     }
-  }, [props.timerState]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timerState]);
 
-  useEffect(() => {
-    document.title = formattedTime() + ' - Baroqodoro';
-    if (seconds === 0) {
-      clearInterval(intervalId);
-    }
-  }, [seconds])
-
-  function formattedTime () {
+  function formatTime () {
     const m = Math.floor(seconds % 3600 / 60);
     const s = Math.floor(seconds % 3600 % 60);
     return (m < 10 ? "0" : "") + m + ":" + (s < 10 ? "0" : "") + s;
   }
 
+  const formatTimeOnSecondsChange = useCallback(formatTime, [seconds]);
+  useEffect(() => {
+    document.title = formatTimeOnSecondsChange() + ' - Baroqodoro';
+  }, [formatTimeOnSecondsChange]);
+
   return  (
     <Row className="justify-content-center mt-5">
-      <div className="timer text-monospace">{ formattedTime() }</div>
+      <div className="timer text-monospace">{ formatTime() }</div>
     </Row>
   );
 }
