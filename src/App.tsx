@@ -7,6 +7,7 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import Col from 'react-bootstrap/Col'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row';
+import AudioPlayer from './components/AudioPlayer';
 
 const App = () => {
   const [timerState, setTimerState] = useState(TimerState.Paused);
@@ -24,6 +25,10 @@ const App = () => {
     };
   }, []);
 
+  let audioPlayer;
+  if (timerType === TimerType.Focus) {
+    audioPlayer = <AudioPlayer timerState={ timerState } />;
+  }
   return (
     <div className="App">
       <Navbar/>
@@ -36,6 +41,7 @@ const App = () => {
             </ButtonGroup>
         </Row>
         <Timer timerState={ timerState } timerType={ timerType } />
+        { audioPlayer }
         <Row className="justify-content-center mt-5">
           <Col className="text-center" xs lg="2"><Button className="btn-xl" variant="primary" onClick={ () => setTimerState(TimerState.Started) }>Start</Button></Col>
           <Col className="text-center" xs lg="2"><Button className="btn-xl" variant="warning" onClick={ () => setTimerState(TimerState.Paused) }>Pause</Button></Col>
