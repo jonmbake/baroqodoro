@@ -2,8 +2,8 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('renders logo', () => {
+test('test renders navbar', () => {
   render(<App />);
-  const logoElement = screen.getByAltText("logo");
-  expect(logoElement).toBeInTheDocument();
+  const navigationElement = screen.getByRole("navigation");
+  expect(navigationElement).toBeInTheDocument();
 });
