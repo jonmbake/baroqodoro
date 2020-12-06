@@ -18,10 +18,33 @@ interface AudioPlayerProps {
   timerState: TimerState
 }
 
+const sortedSongs = songs.sort((a, b) => a.composer > b.composer ? 1 : -1);
+
 const AudioPlayer = (props: AudioPlayerProps) => {
-  const sortedSongs = songs.sort((a, b) => a.composer > b.composer ? 1 : -1);
-  const songAudioRef = useRef(new Audio(sortedSongs[0].downloadUrl));
+  const songSelectRef = useRef<HTMLSelectElement>(null)
   const [playMode, setPlayMode] = useState(PlayMode.Serial);
+  const createAudio = (songSrc: string) => {
+    const a = new Audio(songSrc);
+    a.onended = () => {
+      if (playMode === PlayMode.Repeat) {
+        songAudioRef.current.play();
+      } else if (playMode === PlayMode.Shuffle) {
+        const songSrc = songSelectRef.current!.value = sortedSongs[Math.floor(Math.random() * sortedSongs.length)].downloadUrl;
+        updateSong(songSrc);
+      } else {
+        let i =  songSelectRef.current!.selectedIndex;
+        if (i === sortedSongs.length - 1) {
+          i = 0;
+        } else {
+          ++i;
+        }
+        const songSrc = songSelectRef.current!.value = sortedSongs[i].downloadUrl;
+        updateSong(songSrc);
+      }
+    };
+    return a;
+  }
+  const songAudioRef = useRef(createAudio(sortedSongs[0].downloadUrl));
 
   const songsSelections = sortedSongs.map((s, i) => {
     return (
@@ -37,9 +60,10 @@ const AudioPlayer = (props: AudioPlayerProps) => {
     }
   }, [props.timerState]);
 
-  function updateSong (e: ChangeEvent<any>) {
+  function updateSong (songSrc: string) {
     songAudioRef.current.pause();
-    songAudioRef.current = new Audio(e.target.value);
+    songAudioRef.current.remove();
+    songAudioRef.current = createAudio(songSrc);
     if (props.timerState === TimerState.Started) {
       songAudioRef.current.play();
     }
@@ -52,7 +76,7 @@ const AudioPlayer = (props: AudioPlayerProps) => {
         <InputGroup.Prepend>
           <InputGroup.Text id="basic-addon1"><FileMusic /></InputGroup.Text>
         </InputGroup.Prepend>
-        <Form.Control as="select" onChange={ updateSong } >
+        <Form.Control as="select" ref={ songSelectRef} onChange={ (e: ChangeEvent<any>) => { updateSong(e.target.value)} }>
           { songsSelections }
         </Form.Control>
         <InputGroup.Append>

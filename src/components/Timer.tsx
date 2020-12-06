@@ -70,6 +70,14 @@ const Timer = (props: TimerProps) => {
     document.title = formatTimeOnSecondsChange() + ' - Baroqodoro';
   }, [formatTimeOnSecondsChange]);
 
+  // Reset timer when seconds hit zero
+  useEffect(() => {
+   if (seconds === 0) {
+    clearInterval(intervalId.current);
+    resetOnTimerTypeChange();
+   }
+  }, [seconds, resetOnTimerTypeChange]);
+
   return  (
     <Row className="justify-content-center mt-5">
       <div className="timer text-monospace">{ formatTime() }</div>

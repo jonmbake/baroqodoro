@@ -26,9 +26,9 @@ const App = () => {
   }, []);
 
   let audioPlayer;
-  if (timerType === TimerType.Focus) {
-    audioPlayer = <AudioPlayer timerState={ timerState } />;
-  }
+  //if (timerType === TimerType.Focus) {
+  audioPlayer = <AudioPlayer timerState={ timerState } />;
+  //}
   return (
     <div className="App">
       <Navbar/>
