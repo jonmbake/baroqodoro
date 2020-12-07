@@ -40,7 +40,7 @@ const App = () => {
               <Button variant="outline-secondary" className={ timerType === TimerType.LongBreak ? 'active' : '' } onClick={ () => setTimerType(TimerType.LongBreak) }>Long Break</Button>
             </ButtonGroup>
         </Row>
-        <Timer timerState={ timerState } timerType={ timerType } />
+        <Timer timerState={ timerState } timerType={ timerType } setTimerState={ setTimerState } />
         { audioPlayer }
         <Row className="justify-content-center mt-5">
           <Col className="text-center" xs lg="2"><Button className="btn-xl" variant="primary" onClick={ () => setTimerState(TimerState.Started) }>Start</Button></Col>

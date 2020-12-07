@@ -1,7 +1,8 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
 import Row from 'react-bootstrap/Row';
 
 export enum TimerState {
+  Completed,
   Started,
   Paused,
   Reset
@@ -14,13 +15,15 @@ export enum TimerType {
 }
 
 interface TimerProps {
+  setTimerState: Dispatch<SetStateAction<TimerState>>;
   timerState: TimerState;
   timerType: TimerType;
 }
 
 const Timer = (props: TimerProps) => {
-  const { timerState, timerType } = props;
+  const { setTimerState, timerState, timerType } = props;
   const intervalId = useRef<number>();
+  const prevTimerState = useRef<TimerState>();
   const [seconds, setSeconds] = useState(0);
 
   function reset () {
@@ -43,10 +46,14 @@ const Timer = (props: TimerProps) => {
   useEffect(() => {
     switch (timerState) {
       case TimerState.Started:
+        if (prevTimerState.current === TimerState.Completed) {
+          reset();
+        }
         intervalId.current = window.setInterval(() => {
           setSeconds(s => s <= 0 ? 0 : --s)
         }, 1000)
         break;
+      case TimerState.Completed:
       case TimerState.Paused:
         clearInterval(intervalId.current);
         break;
@@ -56,6 +63,7 @@ const Timer = (props: TimerProps) => {
         reset();
         break;
     }
+    prevTimerState.current = timerState;
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timerState]);
 
@@ -72,11 +80,10 @@ const Timer = (props: TimerProps) => {
 
   // Reset timer when seconds hit zero
   useEffect(() => {
-   if (seconds === 0) {
-    clearInterval(intervalId.current);
-    resetOnTimerTypeChange();
+   if (timerState === TimerState.Started && seconds === 0) {
+     setTimerState(TimerState.Completed);
    }
-  }, [seconds, resetOnTimerTypeChange]);
+  }, [seconds, timerState, setTimerState]);
 
   return  (
     <Row className="justify-content-center mt-5">
