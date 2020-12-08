@@ -24,7 +24,7 @@ const Timer = (props: TimerProps) => {
   const { setTimerState, timerState, timerType } = props;
   const intervalId = useRef<number>();
   const prevTimerState = useRef<TimerState>();
-  const [seconds, setSeconds] = useState(0);
+  const [seconds, setSeconds] = useState(-1);
 
   function reset () {
     switch (timerType) {
@@ -68,6 +68,9 @@ const Timer = (props: TimerProps) => {
   }, [timerState]);
 
   function formatTime () {
+    if (seconds <= 0) {
+      return "00:00";
+    }
     const m = Math.floor(seconds % 3600 / 60);
     const s = Math.floor(seconds % 3600 % 60);
     return (m < 10 ? "0" : "") + m + ":" + (s < 10 ? "0" : "") + s;
@@ -80,7 +83,8 @@ const Timer = (props: TimerProps) => {
 
   // Reset timer when seconds hit zero
   useEffect(() => {
-   if (timerState === TimerState.Started && seconds === 0) {
+   if (TimerState.Started && seconds === 0) {
+     setSeconds(-1);
      setTimerState(TimerState.Completed);
    }
   }, [seconds, timerState, setTimerState]);
