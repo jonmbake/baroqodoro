@@ -25,10 +25,6 @@ const App = () => {
     };
   }, []);
 
-  let audioPlayer;
-  //if (timerMode === TimerMode.Focus) {
-  audioPlayer = <AudioPlayer timerMode={ timerMode } timerState={ timerState } />;
-  //}
   return (
     <div className="App">
       <Navbar/>
@@ -41,7 +37,7 @@ const App = () => {
             </ButtonGroup>
         </Row>
         <Timer timerState={ timerState } timerMode={ timerMode } setTimerState={ setTimerState } />
-        { audioPlayer }
+        <AudioPlayer timerMode={ timerMode } timerState={ timerState } />
         <Row className="justify-content-center mt-5">
           <Col className="text-center" xs lg="2"><Button className="btn-xl" variant="primary" onClick={ () => setTimerState(TimerState.Started) }>Start</Button></Col>
           <Col className="text-center" xs lg="2"><Button className="btn-xl" variant="warning" onClick={ () => setTimerState(TimerState.Paused) }>Pause</Button></Col>
