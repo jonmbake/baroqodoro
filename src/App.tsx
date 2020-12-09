@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
 import Navbar from './components/Navbar';
-import Timer, { TimerState, TimerType } from './components/Timer';
+import Timer, { TimerState, TimerMode } from './components/Timer';
 import Button from 'react-bootstrap/Button'
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import Col from 'react-bootstrap/Col'
@@ -11,7 +11,7 @@ import AudioPlayer from './components/AudioPlayer';
 
 const App = () => {
   const [timerState, setTimerState] = useState(TimerState.Paused);
-  const [timerType, setTimerType] = useState(TimerType.Focus);
+  const [timerMode, setTimerMode] = useState(TimerMode.Focus);
 
   useEffect(() => {
     const keyboardShortcuts = (event: any) => {
@@ -26,8 +26,8 @@ const App = () => {
   }, []);
 
   let audioPlayer;
-  //if (timerType === TimerType.Focus) {
-  audioPlayer = <AudioPlayer timerState={ timerState } />;
+  //if (timerMode === TimerMode.Focus) {
+  audioPlayer = <AudioPlayer timerMode={ timerMode } timerState={ timerState } />;
   //}
   return (
     <div className="App">
@@ -35,12 +35,12 @@ const App = () => {
       <Container>
         <Row className="justify-content-center mt-5">
             <ButtonGroup>
-              <Button variant="outline-secondary" className={ timerType === TimerType.Focus ? 'active' : '' } onClick={ () => setTimerType(TimerType.Focus) }>Focus</Button>
-              <Button variant="outline-secondary" className={ timerType === TimerType.ShortBreak ? 'active' : '' } onClick={ () => setTimerType(TimerType.ShortBreak) }>Short Break</Button>
-              <Button variant="outline-secondary" className={ timerType === TimerType.LongBreak ? 'active' : '' } onClick={ () => setTimerType(TimerType.LongBreak) }>Long Break</Button>
+              <Button variant="outline-secondary" className={ timerMode === TimerMode.Focus ? 'active' : '' } onClick={ () => setTimerMode(TimerMode.Focus) }>Focus</Button>
+              <Button variant="outline-secondary" className={ timerMode === TimerMode.ShortBreak ? 'active' : '' } onClick={ () => setTimerMode(TimerMode.ShortBreak) }>Short Break</Button>
+              <Button variant="outline-secondary" className={ timerMode === TimerMode.LongBreak ? 'active' : '' } onClick={ () => setTimerMode(TimerMode.LongBreak) }>Long Break</Button>
             </ButtonGroup>
         </Row>
-        <Timer timerState={ timerState } timerType={ timerType } setTimerState={ setTimerState } />
+        <Timer timerState={ timerState } timerMode={ timerMode } setTimerState={ setTimerState } />
         { audioPlayer }
         <Row className="justify-content-center mt-5">
           <Col className="text-center" xs lg="2"><Button className="btn-xl" variant="primary" onClick={ () => setTimerState(TimerState.Started) }>Start</Button></Col>

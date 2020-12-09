@@ -6,7 +6,7 @@ import Row from 'react-bootstrap/Row';
 import { ArrowRepeat, FileMusic, Shuffle } from 'react-bootstrap-icons';
 import Col from 'react-bootstrap/Col';
 import songs from '../songs.json';
-import { TimerState } from './Timer';
+import { TimerMode, TimerState } from './Timer';
 
 export enum PlayMode {
   Serial,
@@ -15,7 +15,8 @@ export enum PlayMode {
 }
 
 interface AudioPlayerProps {
-  timerState: TimerState
+  timerState: TimerState,
+  timerMode: TimerMode
 }
 
 const sortedSongs = songs.sort((a, b) => a.composer > b.composer ? 1 : -1);
@@ -53,12 +54,12 @@ const AudioPlayer = (props: AudioPlayerProps) => {
   });
 
   useEffect(() => {
-    if (props.timerState === TimerState.Started) {
+    if (props.timerMode === TimerMode.Focus && props.timerState === TimerState.Started) {
       songAudioRef.current.play();
     } else {
       songAudioRef.current.pause();
     }
-  }, [props.timerState]);
+  }, [props.timerState, props.timerMode]);
 
   function updateSong (songSrc: string) {
     songAudioRef.current.pause();

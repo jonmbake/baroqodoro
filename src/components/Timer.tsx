@@ -8,7 +8,7 @@ export enum TimerState {
   Reset
 }
 
-export enum TimerType {
+export enum TimerMode {
   Focus,
   ShortBreak,
   LongBreak
@@ -17,31 +17,31 @@ export enum TimerType {
 interface TimerProps {
   setTimerState: Dispatch<SetStateAction<TimerState>>;
   timerState: TimerState;
-  timerType: TimerType;
+  timerMode: TimerMode;
 }
 
 const Timer = (props: TimerProps) => {
-  const { setTimerState, timerState, timerType } = props;
+  const { setTimerState, timerState, timerMode } = props;
   const intervalId = useRef<number>();
   const prevTimerState = useRef<TimerState>();
   const [seconds, setSeconds] = useState(-1);
 
   function reset () {
-    switch (timerType) {
-      case TimerType.Focus:
+    switch (timerMode) {
+      case TimerMode.Focus:
         setSeconds(1500);
         break;
-      case TimerType.ShortBreak:
+      case TimerMode.ShortBreak:
         setSeconds(300);
         break;
-      case TimerType.LongBreak:
+      case TimerMode.LongBreak:
         setSeconds(900);
         break;
     }
   }
 
-  const resetOnTimerTypeChange = useCallback(reset, [timerType]);
-  useEffect(resetOnTimerTypeChange, [resetOnTimerTypeChange]);
+  const resetOnTimerModeChange = useCallback(reset, [timerMode]);
+  useEffect(resetOnTimerModeChange, [resetOnTimerModeChange]);
 
   useEffect(() => {
     switch (timerState) {
