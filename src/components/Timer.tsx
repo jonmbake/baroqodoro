@@ -20,8 +20,7 @@ interface TimerProps {
   timerMode: TimerMode;
 }
 
-const Timer = (props: TimerProps) => {
-  const { setTimerState, timerState, timerMode } = props;
+const Timer = ({ setTimerState, timerState, timerMode }: TimerProps) => {
   const intervalId = useRef<number>();
   const prevTimerState = useRef<TimerState>();
   const [seconds, setSeconds] = useState(-1);

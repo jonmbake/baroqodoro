@@ -21,70 +21,64 @@ interface AudioPlayerProps {
 
 const sortedSongs = songs.sort((a, b) => a.composer > b.composer ? 1 : -1);
 
-const AudioPlayer = (props: AudioPlayerProps) => {
-  const songSelectRef = useRef<HTMLSelectElement>(null)
+const AudioPlayer = ({timerMode, timerState}: AudioPlayerProps) => {
   const [playMode, setPlayMode] = useState(PlayMode.Serial);
   const [isMuted, setMuted] = useState(false);
-  const createAudio = (songSrc: string) => {
-    const a = new Audio(songSrc);
-    a.onended = () => {
-      if (playMode === PlayMode.Repeat) {
-        songAudioRef.current.play();
-      } else if (playMode === PlayMode.Shuffle) {
-        const songSrc = songSelectRef.current!.value = sortedSongs[Math.floor(Math.random() * sortedSongs.length)].downloadUrl;
-        updateSong(songSrc);
+  const [selectedSong, setSelectedSong] = useState(sortedSongs[0].downloadUrl)
+
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  // Play/pause the audio when timer is started or paused
+  useEffect(() => {
+    if (timerMode === TimerMode.Focus && timerState === TimerState.Started) {
+      audioRef.current!.play();
+    } else {
+      audioRef.current!.pause();
+    }
+  }, [timerState, timerMode]);
+
+  // Mute and pause when taking a break
+  useEffect(() => {
+    if (timerMode === TimerMode.Focus) {
+      setMuted(false);
+    } else {
+      audioRef.current!.pause();
+      setMuted(true);
+    }
+  }, [timerMode]);
+
+  // Play or load the newly selected song
+  useEffect(() => {
+    audioRef.current!.pause();
+    if (timerState === TimerState.Started) {
+      audioRef.current!.play();
+    } else {
+      audioRef.current!.load();
+    }
+  }, [selectedSong]);
+
+  function onAudioEnded () {
+    if (playMode === PlayMode.Repeat) {
+      audioRef.current!.currentTime = 0;
+      audioRef.current!.play();
+    } else if (playMode === PlayMode.Shuffle) {
+      setSelectedSong(sortedSongs[Math.floor(Math.random() * sortedSongs.length)].downloadUrl);
+    } else {
+      let i =  sortedSongs.findIndex(s => s.downloadUrl === selectedSong);
+      if (i === sortedSongs.length - 1) {
+        i = 0;
       } else {
-        let i =  songSelectRef.current!.selectedIndex;
-        if (i === sortedSongs.length - 1) {
-          i = 0;
-        } else {
-          ++i;
-        }
-        const songSrc = songSelectRef.current!.value = sortedSongs[i].downloadUrl;
-        updateSong(songSrc);
+        ++i;
       }
-    };
-    return a;
+      setSelectedSong(sortedSongs[i].downloadUrl);
+    }
   }
-  const songAudioRef = useRef(createAudio(sortedSongs[0].downloadUrl));
 
   const songsSelections = sortedSongs.map((s, i) => {
     return (
       <option key={ i } value={ s.downloadUrl }>{ s.composer } - { s.title }</option>
     );
   });
-
-  useEffect(() => {
-    if (props.timerMode === TimerMode.Focus && props.timerState === TimerState.Started) {
-      songAudioRef.current.play();
-    } else {
-      songAudioRef.current.pause();
-    }
-  }, [props.timerState, props.timerMode]);
-
-  useEffect(() => {
-    if (props.timerMode === TimerMode.Focus) {
-      setMuted(false);
-    } else {
-      songAudioRef.current.pause();
-      setMuted(true);
-    }
-  }, [props.timerMode]);
-
-
-  useEffect(() => {
-    songAudioRef.current.muted = isMuted;
-  }, [isMuted]);
-
-  function updateSong (songSrc: string) {
-    songAudioRef.current.pause();
-    songAudioRef.current.src = songSrc;
-    if (props.timerState === TimerState.Started) {
-      songAudioRef.current.play();
-    } else {
-      songAudioRef.current.load();
-    }
-  }
 
   return (
     <Row className="justify-content-center mt-5">
@@ -93,7 +87,7 @@ const AudioPlayer = (props: AudioPlayerProps) => {
         <InputGroup.Prepend>
           <InputGroup.Text id="basic-addon1"><MusicNoteBeamed /></InputGroup.Text>
         </InputGroup.Prepend>
-        <Form.Control as="select" ref={ songSelectRef} onChange={ (e: ChangeEvent<any>) => { updateSong(e.target.value)} }>
+        <Form.Control as="select" onChange={ (e: ChangeEvent<any>) => { setSelectedSong(e.target.value)} } value={ selectedSong }>
           { songsSelections }
         </Form.Control>
         <InputGroup.Append>
@@ -106,6 +100,7 @@ const AudioPlayer = (props: AudioPlayerProps) => {
         </InputGroup.Append>
       </InputGroup>
       <small className="text-muted">Music courtesy of <a href="http://www.baroquemusic.org/">baroquemusic.org</a></small>
+      <audio style={ {"display": "none"} } ref={ audioRef } src={ selectedSong } muted={ isMuted } onEnded={ onAudioEnded } />
       </Col>
     </Row>
   );
