@@ -28,14 +28,14 @@ const AudioPlayer = ({timerMode, timerState}: AudioPlayerProps) => {
 
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  // Play/pause the audio when timer is started or paused
+  // Play/pause the audio when timer is started or paused, or the selected song changes
   useEffect(() => {
     if (timerMode === TimerMode.Focus && timerState === TimerState.Started) {
       audioRef.current!.play();
     } else {
       audioRef.current!.pause();
     }
-  }, [timerState, timerMode]);
+  }, [selectedSong, timerState, timerMode]);
 
   // Mute and pause when taking a break
   useEffect(() => {
@@ -46,16 +46,6 @@ const AudioPlayer = ({timerMode, timerState}: AudioPlayerProps) => {
       setMuted(true);
     }
   }, [timerMode]);
-
-  // Play or load the newly selected song
-  useEffect(() => {
-    audioRef.current!.pause();
-    if (timerState === TimerState.Started) {
-      audioRef.current!.play();
-    } else {
-      audioRef.current!.load();
-    }
-  }, [selectedSong]);
 
   function onAudioEnded () {
     if (playMode === PlayMode.Repeat) {
