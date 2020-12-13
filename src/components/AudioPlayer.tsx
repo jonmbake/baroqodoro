@@ -6,7 +6,7 @@ import Row from 'react-bootstrap/Row';
 import { ArrowRepeat, MusicNoteBeamed, Shuffle, VolumeMute } from 'react-bootstrap-icons';
 import Col from 'react-bootstrap/Col';
 import songs from '../songs.json';
-import { TimerMode, TimerState } from './Timer';
+import { TimerMode } from '../App';
 
 export enum PlayMode {
   Serial,
@@ -15,27 +15,26 @@ export enum PlayMode {
 }
 
 interface AudioPlayerProps {
-  timerState: TimerState,
-  timerMode: TimerMode
+  playTrack: boolean,
+  timerMode: TimerMode | undefined
 }
 
 const sortedSongs = songs.sort((a, b) => a.composer > b.composer ? 1 : -1);
 
-const AudioPlayer = ({timerMode, timerState}: AudioPlayerProps) => {
+const AudioPlayer = ({timerMode, playTrack}: AudioPlayerProps) => {
   const [playMode, setPlayMode] = useState(PlayMode.Serial);
   const [isMuted, setMuted] = useState(false);
   const [selectedSong, setSelectedSong] = useState(sortedSongs[0].downloadUrl)
 
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  // Play/pause the audio when timer is started or paused, or the selected song changes
   useEffect(() => {
-    if (timerMode === TimerMode.Focus && timerState === TimerState.Started) {
+    if (playTrack) {
       audioRef.current!.play();
     } else {
       audioRef.current!.pause();
     }
-  }, [selectedSong, timerState, timerMode]);
+  }, [playTrack]);
 
   // Mute and pause when taking a break
   useEffect(() => {
