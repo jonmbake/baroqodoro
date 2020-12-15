@@ -8,6 +8,7 @@ import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row';
 import AudioPlayer from './components/AudioPlayer';
 import { useTimer } from 'react-timer-hook';
+import useStateWithLocalStorage from './util/storageState';
 
 export enum TimerMode {
   Focus = 1500000,
@@ -15,9 +16,18 @@ export enum TimerMode {
   LongBreak = 600000
 }
 
+class HistoryItem {
+  constructor (
+    public timerMode: string,
+    public completed: string,
+  ) {}
+}
+
 const App = () => {
   const [timerMode, setTimerMode] = useState(TimerMode.Focus);
-  const { minutes, seconds, pause, resume, restart, isRunning } = useTimer({ expiryTimestamp: Date.now() + TimerMode.Focus })
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [history, setHistory] = useStateWithLocalStorage<Array<HistoryItem>>('baroqodoro-history', [], window.localStorage);
+  const { minutes, seconds, pause, resume, restart, isRunning } = useTimer({ expiryTimestamp: Date.now() + TimerMode.Focus, onExpire: () => setHistory(h => h.concat(new HistoryItem(TimerMode[timerMode], new Date().toLocaleString()))) })
   // A hack because react-timer-hook doesn't allow pause on init
   const [timerReady, setTimerReady] = useState(false);
 
