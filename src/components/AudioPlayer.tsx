@@ -34,7 +34,7 @@ const AudioPlayer = ({timerMode, playTrack}: AudioPlayerProps) => {
     } else {
       audioRef.current!.pause();
     }
-  }, [playTrack]);
+  }, [selectedSong, playTrack]);
 
   // Mute and pause when taking a break
   useEffect(() => {
