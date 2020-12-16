@@ -58,7 +58,7 @@ const App = () => {
         </Row>
         <AudioPlayer timerMode={ timerMode } playTrack={ timerReady && isRunning } />
         <Row className="justify-content-center mt-5">
-          <Col className="text-center" xs lg="2"><Button className="btn-xl" variant="primary" onClick={ resume }>Start</Button></Col>
+          <Col className="text-center" xs lg="2"><Button className="btn-xl" variant="primary" onClick={ () => minutes === 0 && seconds === 0 ? restart(Date.now() + timerMode.valueOf()) : resume() }>Start</Button></Col>
           <Col className="text-center" xs lg="2"><Button className="btn-xl" variant="warning" onClick={ pause }>Pause</Button></Col>
           <Col className="text-center" xs lg="2"><Button className="btn-xl" variant="danger" onClick={ () => restart(Date.now() + timerMode.valueOf()) }>Restart</Button></Col>
         </Row>
