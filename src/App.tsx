@@ -36,7 +36,7 @@ const App = () => {
             <Timer setHistory={ setHistory } />
           </Route>
           <Route path="/log" >
-            <Log history={ history } setHistory={ setHistory } />
+            <Log settings={ settings } history={ history } setHistory={ setHistory } />
           </Route>
           <Route path="/settings">
             <SettingsPage settings={ settings } setSettings={ setSettings }/>

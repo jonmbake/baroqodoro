@@ -1,13 +1,27 @@
 import React, { Fragment, Dispatch, SetStateAction } from "react";
-import { Alert, Button, Table } from "react-bootstrap";
-import { HistoryItem } from "../App";
+import { Alert, Button, ProgressBar, Table } from "react-bootstrap";
+import { HistoryItem, Settings } from "../App";
+
+function numberCompletedToday (history: Array<HistoryItem>) {
+  return history.filter(hi => {
+    const today = new Date().toLocaleDateString();
+    return hi.completed.includes(today);
+  }).length;
+}
+
+export function calculateGoalCompletionPercentage (dailyGoal: number, history: Array<HistoryItem>) {
+  const completedToday = numberCompletedToday(history);
+
+  return completedToday > dailyGoal ? 100 : ((completedToday / dailyGoal) * 100);
+}
 
 interface Props {
   history: Array<HistoryItem>,
-  setHistory: Dispatch<SetStateAction<Array<HistoryItem>>>
+  setHistory: Dispatch<SetStateAction<Array<HistoryItem>>>,
+  settings: Settings
 }
 
-const Log = ({ history, setHistory }: Props) => {
+const Log = ({ history, setHistory, settings }: Props) => {
 
   function clearLog () {
     if(window.confirm('Are you sure that you want to clear the log?')) {
@@ -33,6 +47,10 @@ const Log = ({ history, setHistory }: Props) => {
       <Alert variant="info">
         Log entries are saved to this browser's local storage. When clearning browser data, log entries will be lost.
       </Alert>
+      <label>Daily Goal Progress</label>
+      <ProgressBar now={ calculateGoalCompletionPercentage(settings.dailyGoal, history) } />
+       <output>{ numberCompletedToday(history) } / { settings.dailyGoal }</output>
+      <h2 className="mt-3">Log Entries</h2>
     <Table striped bordered hover className="mt-3">
       <thead>
         <tr>
