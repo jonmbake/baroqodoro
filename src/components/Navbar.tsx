@@ -38,8 +38,8 @@ const NavbarExp = ({history, settings}: Props) => {
           <Circle progress={ goalProgress } size="30" lineWidth="50" progressColor="#28a745" showPercentage={ false } />
         </Dropdown.Toggle>
         <Dropdown.Menu align="right">
-          <Dropdown.Item href="/log">Log</Dropdown.Item>
-          <Dropdown.Item href="/settings">Settings</Dropdown.Item>
+          <Dropdown.Item href="/#/log">Log</Dropdown.Item>
+          <Dropdown.Item href="/#/settings">Settings</Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
     </Navbar>

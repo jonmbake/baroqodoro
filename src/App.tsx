@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { HashRouter, Route, Switch } from 'react-router-dom';
 import './App.css';
 import Navbar from './components/Navbar';
 import Container from 'react-bootstrap/Container'
@@ -27,7 +27,7 @@ const App = () => {
   const [settings, setSettings] = useStateWithLocalStorage<Settings>('baroqodoroSettings', new Settings(), window.localStorage)
 
   return (
-    <BrowserRouter>
+    <HashRouter>
     <div className="App">
       <Navbar settings={ settings } history={ history }/>
       <Container className="mt-5">
@@ -44,7 +44,7 @@ const App = () => {
         </Switch>
       </Container>
     </div>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
