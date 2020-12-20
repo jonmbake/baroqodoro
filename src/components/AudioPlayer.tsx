@@ -6,7 +6,7 @@ import Row from 'react-bootstrap/Row';
 import { ArrowRepeat, MusicNoteBeamed, Shuffle, VolumeMute } from 'react-bootstrap-icons';
 import Col from 'react-bootstrap/Col';
 import songs from '../songs.json';
-import { TimerMode } from '../pages/Main';
+import { TimerMode } from '../pages/Timer';
 
 export enum PlayMode {
   Serial,

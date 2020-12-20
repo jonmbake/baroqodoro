@@ -1,32 +1,27 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, Dispatch, SetStateAction, useEffect, useState } from 'react'
 import Button from 'react-bootstrap/Button'
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import Col from 'react-bootstrap/Col'
 import Row from 'react-bootstrap/Row';
 import AudioPlayer from '../components/AudioPlayer';
 import { useTimer } from 'react-timer-hook';
-import useStateWithLocalStorage from '../util/storageState';
+import { HistoryItem } from '../App';
 
 export enum TimerMode {
-  Focus = 1500000,
+  Focus = 10000,
   ShortBreak = 300000,
   LongBreak = 600000
 }
 
-export class HistoryItem {
-  constructor (
-    public timerMode: string,
-    public completed: string,
-  ) {}
-}
-
 export const historyStorageKey = 'baroqodoroLog';
 
-const Main = () => {
+interface Props {
+  setHistory: Dispatch<SetStateAction<Array<HistoryItem>>>
+}
+
+const Main = ({ setHistory }: Props) => {
   const [timerMode, setTimerMode] = useState(TimerMode.Focus);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [history, setHistory] = useStateWithLocalStorage<Array<HistoryItem>>(historyStorageKey, [], window.localStorage);
-  const { minutes, seconds, pause, resume, restart, isRunning } = useTimer({ expiryTimestamp: Date.now() + TimerMode.Focus, onExpire: () => setHistory(h => h.concat(new HistoryItem(TimerMode[timerMode], new Date().toLocaleString()))) })
+  const { minutes, seconds, pause, resume, restart, isRunning } = useTimer({ expiryTimestamp: Date.now() + TimerMode.Focus, onExpire: () => setHistory(h => h.concat(new HistoryItem(TimerMode[timerMode], new Date().toLocaleString(), ''))) })
   // A hack because react-timer-hook doesn't allow pause on init
   const [timerReady, setTimerReady] = useState(false);
 

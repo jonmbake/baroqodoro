@@ -1,10 +1,13 @@
-import React, { Fragment } from "react";
-import { Button, Table } from "react-bootstrap";
-import useStateWithLocalStorage from "../util/storageState";
-import { HistoryItem, historyStorageKey } from "./Main";
+import React, { Fragment, Dispatch, SetStateAction } from "react";
+import { Alert, Button, Table } from "react-bootstrap";
+import { HistoryItem } from "../App";
 
-const Log = () => {
-  const [history, setHistory] = useStateWithLocalStorage<Array<HistoryItem>>(historyStorageKey, [], window.localStorage);
+interface Props {
+  history: Array<HistoryItem>,
+  setHistory: Dispatch<SetStateAction<Array<HistoryItem>>>
+}
+
+const Log = ({ history, setHistory }: Props) => {
 
   function clearLog () {
     if(window.confirm('Are you sure that you want to clear the log?')) {
@@ -17,6 +20,9 @@ const Log = () => {
       <tr key={i}>
         <td>{ h.timerMode }</td>
         <td>{ h.completed }</td>
+        <th><input type="text" style={{ width: "100%" }} value={ h.notes } onChange={ (e) => setHistory(prevHistory => {
+          return prevHistory.map((ph, i2) => i2 === i ? {...ph, notes: e.target.value} : ph)
+        })}/></th>
       </tr>
     );
   });
@@ -24,11 +30,15 @@ const Log = () => {
   return (
     <Fragment>
       <h1>Log</h1>
+      <Alert variant="info">
+        Log entries are saved to this browser's local storage. When clearning browser data, log entries will be lost.
+      </Alert>
     <Table striped bordered hover className="mt-3">
       <thead>
         <tr>
           <th>Type</th>
           <th>Time Completed</th>
+          <th>Notes</th>
         </tr>
       </thead>
       <tbody>

@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction } from 'react';
 
-function getItem (sessionStorageKey: string,  storage: Storage) {
+export function getItem (sessionStorageKey: string,  storage: Storage) {
   const valueStr = storage.getItem(sessionStorageKey);
   if (valueStr == null) {
     return;
