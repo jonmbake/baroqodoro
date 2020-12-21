@@ -8,7 +8,7 @@ import { useTimer } from 'react-timer-hook';
 import { HistoryItem } from '../App';
 
 export enum TimerMode {
-  Focus = 10000,
+  Focus = 1500000,
   ShortBreak = 300000,
   LongBreak = 600000
 }
