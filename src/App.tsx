@@ -7,6 +7,7 @@ import Timer from './pages/Timer';
 import History from './pages/History';
 import SettingsPage from './pages/Settings';
 import useStateWithLocalStorage from './util/storageState';
+import About from './pages/About';
 
 export class Settings {
   constructor (
@@ -35,6 +36,9 @@ const App = () => {
           <Route path="/" exact>
             <Timer setHistory={ setHistory } />
           </Route>
+          <Route path="/about" >
+            <About />
+          </Route>
           <Route path="/history" >
             <History settings={ settings } history={ history } setHistory={ setHistory } />
           </Route>
@@ -44,6 +48,11 @@ const App = () => {
         </Switch>
       </Container>
     </div>
+    <footer className="footer">
+      <div className="container">
+        <a href="mailto:jonmbake@gmail.com">Contact</a> · <a target="_blank" rel="noreferrer" href="https://github.com/jonmbake/baroqodoro">Github</a>
+      </div>
+    </footer>
     </HashRouter>
   );
 }
