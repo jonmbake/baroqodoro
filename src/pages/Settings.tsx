@@ -14,7 +14,7 @@ const SettingsPage = ({ settings, setSettings }: Props) => {
     <Fragment>
       <h1>Settings</h1>
       <Alert variant="info">
-        Settings are saved to this browser's local storage. When clearning browser data, settings will be lost.
+        Settings are saved to this browser's local storage. When clearing browser data, settings will be lost.
       </Alert>
       <Form className="mt-3">
         <Form.Group controlId="dailySessionGoal">

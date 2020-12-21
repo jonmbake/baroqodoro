@@ -5,7 +5,7 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import Navbar from 'react-bootstrap/Navbar';
 import { DropdownToggleProps } from 'react-bootstrap/esm/DropdownToggle';
 import { HistoryItem, Settings } from '../App';
-import { calculateGoalCompletionPercentage } from '../pages/Log';
+import { calculateGoalCompletionPercentage } from '../pages/History';
 
 const CustomToggle = forwardRef(({ children, onClick }: DropdownToggleProps, ref: any) => (
   <a href="#" ref={ref}
@@ -32,7 +32,7 @@ const NavbarExp = ({history, settings}: Props) => {
           <Circle progress={ calculateGoalCompletionPercentage(settings.dailyGoal, history) } size="30" lineWidth="50" progressColor="#28a745" showPercentage={ false } />
         </Dropdown.Toggle>
         <Dropdown.Menu align="right">
-          <Dropdown.Item href="/#/log">Log</Dropdown.Item>
+          <Dropdown.Item href="/#/history">History</Dropdown.Item>
           <Dropdown.Item href="/#/settings">Settings</Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>

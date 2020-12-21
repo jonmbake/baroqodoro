@@ -21,9 +21,9 @@ interface Props {
   settings: Settings
 }
 
-const Log = ({ history, setHistory, settings }: Props) => {
+const History = ({ history, setHistory, settings }: Props) => {
 
-  function clearLog () {
+  function clearHistory () {
     if(window.confirm('Are you sure that you want to clear the log?')) {
       setHistory([]);
     }
@@ -43,29 +43,28 @@ const Log = ({ history, setHistory, settings }: Props) => {
 
   return (
     <Fragment>
-      <h1>Log</h1>
+      <h1>History</h1>
       <Alert variant="info">
-        Log entries are saved to this browser's local storage. When clearning browser data, log entries will be lost.
+        History is saved to this browser's local storage. When clearing browser data, history will be lost.
       </Alert>
       <label>Daily Goal Progress</label>
       <ProgressBar now={ calculateGoalCompletionPercentage(settings.dailyGoal, history) } />
-       <output>{ numberCompletedToday(history) } / { settings.dailyGoal }</output>
-      <h2 className="mt-3">Log Entries</h2>
-    <Table striped bordered hover className="mt-3">
-      <thead>
-        <tr>
-          <th>Type</th>
-          <th>Time Completed</th>
-          <th>Notes</th>
-        </tr>
-      </thead>
-      <tbody>
-        { rows }
-      </tbody>
-    </Table>
-    <Button onClick={ clearLog }>Clear Log</Button>
+      <output>{ numberCompletedToday(history) } / { settings.dailyGoal }</output>
+      <Table striped bordered hover className="mt-3">
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Time Completed</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          { rows }
+        </tbody>
+      </Table>
+      <Button onClick={ clearHistory }>Clear History</Button>
     </Fragment>
   );
 }
 
-export default Log;
+export default History;

@@ -4,7 +4,7 @@ import './App.css';
 import Navbar from './components/Navbar';
 import Container from 'react-bootstrap/Container'
 import Timer from './pages/Timer';
-import Log from './pages/Log';
+import History from './pages/History';
 import SettingsPage from './pages/Settings';
 import useStateWithLocalStorage from './util/storageState';
 
@@ -35,8 +35,8 @@ const App = () => {
           <Route path="/" exact>
             <Timer setHistory={ setHistory } />
           </Route>
-          <Route path="/log" >
-            <Log settings={ settings } history={ history } setHistory={ setHistory } />
+          <Route path="/history" >
+            <History settings={ settings } history={ history } setHistory={ setHistory } />
           </Route>
           <Route path="/settings">
             <SettingsPage settings={ settings } setSettings={ setSettings }/>
