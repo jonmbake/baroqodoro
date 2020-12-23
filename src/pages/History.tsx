@@ -5,7 +5,7 @@ import { HistoryItem, Settings } from "../App";
 function numberCompletedToday (history: Array<HistoryItem>) {
   return history.filter(hi => {
     const today = new Date().toLocaleDateString();
-    return hi.completed.includes(today);
+    return hi.timerMode === 'Focus' && hi.completed.includes(today);
   }).length;
 }
 
