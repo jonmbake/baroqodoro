@@ -16,10 +16,11 @@ export enum TimerMode {
 export const historyStorageKey = 'baroqodoroLog';
 
 interface Props {
-  setHistory: Dispatch<SetStateAction<Array<HistoryItem>>>
+  setHistory: Dispatch<SetStateAction<Array<HistoryItem>>>,
+  setIsRunning: Dispatch<SetStateAction<boolean>>
 }
 
-const Main = ({ setHistory }: Props) => {
+const Main = ({ setHistory, setIsRunning }: Props) => {
   const [timerMode, setTimerMode] = useState(TimerMode.Focus);
   const { minutes, seconds, pause, resume, restart, isRunning } = useTimer({ expiryTimestamp: Date.now() + TimerMode.Focus, onExpire: () => setHistory(h => h.concat(new HistoryItem(TimerMode[timerMode], new Date().toLocaleString(), ''))) })
   // A hack because react-timer-hook doesn't allow pause on init
@@ -30,6 +31,10 @@ const Main = ({ setHistory }: Props) => {
     setTimerReady(true);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    setIsRunning(isRunning);
+  }, [setIsRunning, isRunning]);
 
   function onTimerModeClick (tm: TimerMode) {
     setTimerMode(tm);

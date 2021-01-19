@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { HashRouter, Route, Switch } from 'react-router-dom';
 import './App.css';
 import Navbar from './components/Navbar';
@@ -8,6 +8,7 @@ import History from './pages/History';
 import SettingsPage from './pages/Settings';
 import useStateWithLocalStorage from './util/storageState';
 import About from './pages/About';
+import TaskBar from './components/TaskBar';
 
 export class Settings {
   constructor (
@@ -26,15 +27,17 @@ export class HistoryItem {
 const App = () => {
   const [history, setHistory] = useStateWithLocalStorage<Array<HistoryItem>>('baroqodoroLog', [], window.localStorage);
   const [settings, setSettings] = useStateWithLocalStorage<Settings>('baroqodoroSettings', new Settings(), window.localStorage)
+  const [isRunning, setIsRunning] = useState(false);
 
   return (
     <HashRouter>
     <div className="App">
       <Navbar settings={ settings } history={ history }/>
+      <TaskBar isRunning={ isRunning } />
       <Container className="mt-5">
         <Switch>
           <Route path="/" exact>
-            <Timer setHistory={ setHistory } />
+            <Timer setHistory={ setHistory } setIsRunning={ setIsRunning }/>
           </Route>
           <Route path="/about" >
             <About />
