@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useRef, useState } from "react";
-import { Button, FormControl, InputGroup, ListGroup, Modal } from "react-bootstrap";
+import { Button, ButtonGroup, FormControl, InputGroup, ListGroup, Modal } from "react-bootstrap";
 import { Check } from 'react-bootstrap-icons';
 import useStateWithLocalStorage from "../util/storageState";
 
@@ -25,7 +25,7 @@ const TaskBar = ({ isRunning }: Props) => {
   if (isRunning) {
     classes = classes.concat(" alert-success");
     const focusTask = tasks.find(t => t.active)?.description || 'a task';
-    message = `Focused on ${ focusTask }`;
+    message = `Focused on '${ focusTask }'`;
   } else {
     classes = classes.concat(" alert-danger");
     message = 'Timer paused -- not focused';
@@ -40,15 +40,17 @@ const TaskBar = ({ isRunning }: Props) => {
     if (v == null || v?.trim() === '') {
       return;
     }
-    setTasks(tasks => tasks.concat(new Task(v, tasks.length === 0)));
+    setTasks(tasks => tasks.concat(new Task(v, tasks.length === 0)).sort((t1, t2) => t1.description > t2.description ? 1 : -1));
   }
 
-  const markComplete = (e: React.MouseEvent<HTMLElement>, i: number) => {
+  const toggleCompleted = (e: React.MouseEvent<HTMLElement>, itemIndex: number) => {
     e.stopPropagation();
     setTasks(tasks => {
-      const t = [...tasks];
-      t[i].completed = true;
-      return t;
+      const ts = [...tasks];
+      const t = {...ts[itemIndex]};
+      t.completed = !t.completed;
+      ts[itemIndex] = t;
+      return ts;
     });
   }
 
@@ -70,7 +72,7 @@ const TaskBar = ({ isRunning }: Props) => {
 
   const taskList = tasks.map((t, i) => {
     return (
-      <ListGroup.Item className={ t.completed ? 'completed-task' : '' } active={ t.active } onClick={ () => markActive(i) } key={ i }>{ t.description } <button type="button" className="close" onClick={ (e) => markComplete(e, i) }><span aria-hidden="true"><Check/></span><span className="sr-only">Complete</span></button></ListGroup.Item>
+      <ListGroup.Item className={ t.completed ? 'completed-task' : '' } active={ t.active } onClick={ () => markActive(i) } key={ i }>{ t.description } <button type="button" className="close" onClick={ (e) => toggleCompleted(e, i) }><span aria-hidden="true"><Check/></span><span className="sr-only">Complete</span></button></ListGroup.Item>
     );
   });
 
@@ -79,7 +81,7 @@ const TaskBar = ({ isRunning }: Props) => {
       <div className={ classes }>
         { message } <a href="#" className="alert-link" onClick={ () => setShowTaskList(true)}>Edit tasks</a>
       </div>
-      <Modal show={ showTaskList } onHide={ () => setShowTaskList(false) }>
+      <Modal size="lg" show={ showTaskList } onHide={ () => setShowTaskList(false) }>
         <Modal.Header closeButton>
           <Modal.Title>Tasks</Modal.Title>
         </Modal.Header>
@@ -89,7 +91,7 @@ const TaskBar = ({ isRunning }: Props) => {
           { taskList }
           <ListGroup.Item key={ taskList.length }>
             <InputGroup>
-              <FormControl autoFocus={ true } placeholder="Task description" aria-label="Task description" ref={ addTaskInputRef } />
+              <FormControl autoFocus={ true } placeholder="Task description" aria-label="Task description" ref={ addTaskInputRef } onKeyPress={(event: React.KeyboardEvent) => event.key === 'Enter' ? addTask() : '' } />
               <InputGroup.Append>
                 <Button variant="outline-secondary" onClick={ addTask }>Add</Button>
               </InputGroup.Append>
