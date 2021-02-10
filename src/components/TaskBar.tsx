@@ -72,7 +72,10 @@ const TaskBar = ({ isRunning }: Props) => {
 
   const taskList = tasks.map((t, i) => {
     return (
-      <ListGroup.Item className={ t.completed ? 'completed-task' : '' } active={ t.active } onClick={ () => markActive(i) } key={ i }>{ t.description } <button type="button" className="close" onClick={ (e) => toggleCompleted(e, i) }><span aria-hidden="true"><Check/></span><span className="sr-only">Complete</span></button></ListGroup.Item>
+      <ListGroup.Item className={ t.completed ? 'completed-task' : '' } active={ t.active } onClick={ () => markActive(i) } key={ i }>
+        { t.description }
+        <button type="button" className="close" title="Toggle Complete" onClick={ (e) => toggleCompleted(e, i) }><span aria-hidden="true"><Check/></span><span className="sr-only">Toggle Complete</span></button>&nbsp;
+      </ListGroup.Item>
     );
   });
 
