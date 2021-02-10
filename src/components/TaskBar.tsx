@@ -81,7 +81,7 @@ const TaskBar = ({ isRunning }: Props) => {
       <div className={ classes }>
         { message } <a href="#" className="alert-link" onClick={ () => setShowTaskList(true)}>Edit tasks</a>
       </div>
-      <Modal size="lg" show={ showTaskList } onHide={ () => setShowTaskList(false) }>
+      <Modal size="lg" show={ showTaskList } onHide={ () => setShowTaskList(false) } animation={ false } >
         <Modal.Header closeButton>
           <Modal.Title>Tasks</Modal.Title>
         </Modal.Header>
