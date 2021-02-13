@@ -2,6 +2,7 @@ import React, { ChangeEvent, Fragment, useEffect, useRef, useState } from "react
 import { Button, FormControl, InputGroup, ListGroup, Modal } from "react-bootstrap";
 import { Check, Pencil } from 'react-bootstrap-icons';
 import useStateWithLocalStorage from "../util/storageState";
+import ReactDragListView from 'react-drag-listview';
 
 interface Props {
   isRunning: boolean
@@ -41,7 +42,7 @@ const TaskBar = ({ isRunning }: Props) => {
     if (v == null || v?.trim() === '') {
       return;
     }
-    setTasks(tasks => tasks.concat(new Task(v, tasks.length === 0)).sort((t1, t2) => t1.description > t2.description ? 1 : -1));
+    setTasks(tasks => tasks.concat(new Task(v, tasks.length === 0)));
   }
 
   const saveTask = () => {
@@ -120,6 +121,15 @@ const TaskBar = ({ isRunning }: Props) => {
     );
   });
 
+  function moveItems (fromIndex: number, toIndex: number) {
+    setTasks(tasks => {
+      const updatedTasks = [...tasks];
+      const itemToMove = updatedTasks.splice(fromIndex, 1)[0];
+      updatedTasks.splice(toIndex, 0, itemToMove);
+      return updatedTasks;
+    })
+  }
+
   return (
     <Fragment>
       <div className={ classes }>
@@ -132,7 +142,9 @@ const TaskBar = ({ isRunning }: Props) => {
         <Modal.Body>
           <p>What tasks would you lke to complete today?</p>
         <ListGroup className="task-list">
+          <ReactDragListView onDragEnd={ moveItems } nodeSelector='.list-group-item' >
           { taskList }
+          </ReactDragListView>
           <ListGroup.Item key={ taskList.length }>
             <InputGroup>
               <FormControl placeholder="Task description" aria-label="Task description" ref={ addTaskInputRef } onKeyPress={(event: React.KeyboardEvent) => event.key === 'Enter' ? addTask() : '' } />
